@@ -11,7 +11,7 @@ mod util {
     pub(crate) mod text;
 }
 
-mod data{
+mod data {
     pub(crate) mod default;
 }
 

@@ -23,7 +23,7 @@ fn draw_story_points(
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
-    for i  in 1..10 {
+    for i in 1..10 {
         let story_index = i as f32;
         let pos = Vec3::new(0.0, -100.0 + 100.0 * &story_index, 100.0);
         let pos_text = pos + Vec3::new(50.0, 0.0, 100.0);
@@ -39,7 +39,7 @@ fn draw_story_points(
         commands.spawn((
             StoryPoint,
             Text2dBundle {
-                text: Text::from_section(format!("{}",story_index), my_text_style(500, &asset_server))
+                text: Text::from_section(format!("{}", story_index), my_text_style(500, &asset_server))
                     .with_justify(JustifyText::Center),
                 transform: Transform::from_translation(pos_text),
                 ..default()
