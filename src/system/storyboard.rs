@@ -23,26 +23,29 @@ fn draw_story_points(
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
-    let pos = Vec3::new(0.0, -100.0, 100.0);
-    let pos_text = pos + Vec3::new(0.0, -50.0, 0.0);
-    commands.spawn((
-        StoryPoint,
-        MaterialMesh2dBundle {
-            mesh: Mesh2dHandle(meshes.add(Circle { radius: 16.0 })),
-            material: materials.add(Color::WHITE),
-            transform: Transform::from_translation(pos),
-            ..default()
-        },
-    ));
-    commands.spawn((
-        StoryPoint,
-        Text2dBundle {
-            text: Text::from_section("1", my_text_style(500, asset_server))
-                .with_justify(JustifyText::Center),
-            transform: Transform::from_translation(pos_text),
-            ..default()
-        },
-    ));
+    for i  in 1..10 {
+        let story_index = i as f32;
+        let pos = Vec3::new(0.0, -100.0 + 100.0 * &story_index, 100.0);
+        let pos_text = pos + Vec3::new(50.0, 0.0, 100.0);
+        commands.spawn((
+            StoryPoint,
+            MaterialMesh2dBundle {
+                mesh: Mesh2dHandle(meshes.add(Circle { radius: 16.0 })),
+                material: materials.add(Color::WHITE),
+                transform: Transform::from_translation(pos),
+                ..default()
+            },
+        ));
+        commands.spawn((
+            StoryPoint,
+            Text2dBundle {
+                text: Text::from_section(format!("{}",story_index), my_text_style(500, &asset_server))
+                    .with_justify(JustifyText::Center),
+                transform: Transform::from_translation(pos_text),
+                ..default()
+            },
+        ));
+    }
 }
 
 fn update_story_points(mut query: Query<&mut Transform, With<StoryPoint>>,

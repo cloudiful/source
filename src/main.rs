@@ -11,6 +11,10 @@ mod util {
     pub(crate) mod text;
 }
 
+mod data{
+    pub(crate) mod default;
+}
+
 #[derive(Component)]
 pub(crate) struct MainCamera;
 

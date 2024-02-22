@@ -1,7 +1,8 @@
 use bevy::ecs::schedule::*;
-use bevy::input::mouse::MouseMotion;
+use bevy::input::mouse::{MouseMotion, MouseWheel};
 use bevy::prelude::*;
 
+use crate::data::default;
 use crate::util::text::my_text_style;
 
 pub(crate) struct InputPlugin;
@@ -28,7 +29,11 @@ fn input_handling(
     mouse_input: Res<ButtonInput<MouseButton>>,
     mut event_camera_move: EventWriter<CameraMoveEvent>,
     mut event_mouse_motion: EventReader<MouseMotion>,
+    // mut event_keyboard_down: EventReader<KeyboardInput>,
+    mut event_mouse_scroll: EventReader<MouseWheel>,
 ) {
+    let vel_story_point = default::Velocity::new().story_point;
+
     // mouse drag motion
     if !event_mouse_motion.is_empty() && mouse_input.pressed(MouseButton::Left) {
         let mut mouse_motion;
@@ -40,24 +45,37 @@ fn input_handling(
         }
     }
 
+    use bevy::input::mouse::MouseScrollUnit;
+    for ev in event_mouse_scroll.read() {
+        match ev.unit {
+            MouseScrollUnit::Line => {
+                println!("Scroll (line units): vertical: {}, horizontal: {}", ev.y, ev.x);
+                event_camera_move.send(CameraMoveEvent { delta: Vec3::new(-ev.x * vel_story_point, ev.y * vel_story_point, 0.0) });
+            }
+            MouseScrollUnit::Pixel => {
+                event_camera_move.send(CameraMoveEvent { delta: Vec3::new(-ev.x, ev.y, 0.0) });
+            }
+        }
+    }
+
     // up
-    if keyboard_input.just_pressed(KeyCode::KeyW) || keyboard_input.just_pressed(KeyCode::ArrowUp) {
-        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(0.0, 50.0, 0.0) });
+    if keyboard_input.pressed(KeyCode::KeyW) || keyboard_input.pressed(KeyCode::ArrowUp) {
+        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(0.0, vel_story_point, 0.0) });
     }
     // down
-    else if keyboard_input.just_pressed(KeyCode::KeyS) || keyboard_input.just_pressed(KeyCode::ArrowDown)
+    else if keyboard_input.pressed(KeyCode::KeyS) || keyboard_input.pressed(KeyCode::ArrowDown)
     {
-        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(0.0, -50.0, 0.0) });
+        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(0.0, -vel_story_point, 0.0) });
     }
     // left
-    else if keyboard_input.just_pressed(KeyCode::KeyA) || keyboard_input.just_pressed(KeyCode::ArrowLeft)
+    else if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft)
     {
-        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(-50.0, 0.0, 0.0) });
+        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(-vel_story_point, 0.0, 0.0) });
     }
     // right
-    else if keyboard_input.just_pressed(KeyCode::KeyD) || keyboard_input.just_pressed(KeyCode::ArrowRight)
+    else if keyboard_input.pressed(KeyCode::KeyD) || keyboard_input.pressed(KeyCode::ArrowRight)
     {
-        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(50.0, 0.0, 0.0) });
+        event_camera_move.send(CameraMoveEvent { delta: Vec3::new(vel_story_point, 0.0, 0.0) });
     }
 }
 
@@ -73,10 +91,12 @@ fn update_text(
     }
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands,
+         asset_server: Res<AssetServer>)
+{
     commands.spawn((
         InputText,
-        TextBundle::from_section("none", my_text_style(600, asset_server))
+        TextBundle::from_section("none", my_text_style(600, &asset_server))
             .with_text_justify(JustifyText::Center)
             .with_style(Style {
                 position_type: PositionType::Absolute,
