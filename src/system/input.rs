@@ -5,9 +5,9 @@ use bevy::prelude::*;
 use crate::data::default;
 use crate::util::text::my_text_style;
 
-pub(crate) struct InputPlugin;
+pub(crate) struct InputHandlePlugin;
 
-impl Plugin for InputPlugin {
+impl Plugin for InputHandlePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Startup, setup)

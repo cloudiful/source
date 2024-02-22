@@ -29,7 +29,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins((
-            system::input::InputPlugin,
+            system::input::InputHandlePlugin,
             system::storyboard::StoryBoardPlugin,
         ))
         .add_systems(Startup, setup)
