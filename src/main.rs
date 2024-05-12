@@ -35,4 +35,3 @@ fn main() {
         .add_systems(Startup, setup)
         .run();
 }
-

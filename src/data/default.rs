@@ -1,11 +1,11 @@
 pub(crate) struct Velocity {
-    pub(crate) story_point: f32,
+    pub(crate) story_page: f32,
 }
 
 impl Velocity {
     pub(crate) fn new() -> Velocity {
         Velocity {
-            story_point: 5.0,
+            story_page: 5.0,
         }
     }
 }

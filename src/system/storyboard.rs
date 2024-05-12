@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+use bevy_rapier2d::prelude::Collider;
 
-use crate::system::input::CameraMoveEvent;
+use crate::system::input::StoryPageMoveEvent;
 use crate::util::text::my_text_style;
 
 pub(crate) struct StoryBoardPlugin;
@@ -28,10 +29,11 @@ fn draw_story_points(
         let pos = Vec3::new(0.0, -100.0 + 100.0 * &story_index, 100.0);
         let pos_text = pos + Vec3::new(50.0, 0.0, 100.0);
         commands.spawn((
+            Collider::ball(16.0),
             StoryPoint,
             MaterialMesh2dBundle {
                 mesh: Mesh2dHandle(meshes.add(Circle { radius: 16.0 })),
-                material: materials.add(Color::WHITE),
+                material: materials.add(Color::GRAY),
                 transform: Transform::from_translation(pos),
                 ..default()
             },
@@ -49,7 +51,7 @@ fn draw_story_points(
 }
 
 fn update_story_points(mut query: Query<&mut Transform, With<StoryPoint>>,
-                       mut event_camera_move: EventReader<CameraMoveEvent>) {
+                       mut event_camera_move: EventReader<StoryPageMoveEvent>) {
     if !event_camera_move.is_empty() {
         for ev in event_camera_move.read() {
             for mut q in &mut query {
