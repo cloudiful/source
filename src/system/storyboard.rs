@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
-use bevy_rapier2d::prelude::Collider;
 
 use crate::system::input::StoryPageMoveEvent;
 use crate::util::text::my_text_style;
@@ -29,7 +28,6 @@ fn draw_story_points(
         let pos = Vec3::new(0.0, -100.0 + 100.0 * &story_index, 100.0);
         let pos_text = pos + Vec3::new(50.0, 0.0, 100.0);
         commands.spawn((
-            Collider::ball(16.0),
             StoryPoint,
             MaterialMesh2dBundle {
                 mesh: Mesh2dHandle(meshes.add(Circle { radius: 16.0 })),

@@ -1,7 +1,6 @@
 use bevy::ecs::schedule::*;
 use bevy::input::mouse::{MouseMotion, MouseWheel};
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::{NoUserData, QueryFilter, RapierContext, RapierDebugRenderPlugin, RapierPhysicsPlugin};
 
 use crate::data::default;
 use crate::util::text::my_text_style;
@@ -11,8 +10,6 @@ pub(crate) struct InputHandlePlugin;
 impl Plugin for InputHandlePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
-            .add_plugins(RapierDebugRenderPlugin::default())
             .add_systems(Startup, setup)
             .add_systems(Update, (input_handling, update_text).chain())
             .add_event::<StoryPageMoveEvent>();
@@ -34,7 +31,6 @@ fn input_handling(
     mut event_mouse_motion: EventReader<MouseMotion>,
     mut event_mouse_scroll: EventReader<MouseWheel>,
     mut event_mouse_cursor: EventReader<CursorMoved>,
-    rapier_context: Res<RapierContext>,
     window: Query<&Window>,
 ) {
     let vel_story_point = default::Velocity::new().story_page;
@@ -44,26 +40,6 @@ fn input_handling(
         mouse_cursor_pos = ev.position - Vec2::new(window.single().resolution.width() / 2.0,
                                                    window.single().resolution.height() / 2.0);
 
-        let point = mouse_cursor_pos;
-        let solid = true;
-        let filter = QueryFilter::default();
-
-        // if let Some((entity, projection)) = rapier_context.project_point(
-        //     point, solid, filter
-        // ) {
-        //     // The collider closest to the point has this `handle`.
-        //     println!("Projected point on entity {:?}. Point projection: {}", entity, projection.point);
-        //     println!("Point was inside of the collider shape: {}", projection.is_inside);
-        // }
-
-        rapier_context.intersections_with_point(
-            point, filter, |entity| {
-                // Callback called on each collider with a shape containing the point.
-                println!("The entity {:?} contains the point.", entity);
-                // Return `false` instead if we want to stop searching for other colliders containing this point.
-                true
-            },
-        );
     }
 
     // mouse drag motion
