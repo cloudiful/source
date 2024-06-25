@@ -1,6 +1,6 @@
 use bevy::app::Startup;
-use bevy::DefaultPlugins;
 use bevy::prelude::{App, Camera2dBundle, Commands, Component};
+use bevy::DefaultPlugins;
 
 mod system {
     pub(crate) mod input;
@@ -19,10 +19,7 @@ mod data {
 pub(crate) struct MainCamera;
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        MainCamera,
-        Camera2dBundle::default()
-    ));
+    commands.spawn((MainCamera, Camera2dBundle::default()));
 }
 
 fn main() {

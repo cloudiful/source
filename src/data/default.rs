@@ -4,8 +4,6 @@ pub(crate) struct Velocity {
 
 impl Velocity {
     pub(crate) fn new() -> Velocity {
-        Velocity {
-            story_page: 5.0,
-        }
+        Velocity { story_page: 5.0 }
     }
 }

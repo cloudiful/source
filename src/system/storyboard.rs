@@ -8,8 +8,7 @@ pub(crate) struct StoryBoardPlugin;
 
 impl Plugin for StoryBoardPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_systems(Startup, draw_story_points)
+        app.add_systems(Startup, draw_story_points)
             .add_systems(Update, update_story_points);
     }
 }
@@ -39,8 +38,11 @@ fn draw_story_points(
         commands.spawn((
             StoryPoint,
             Text2dBundle {
-                text: Text::from_section(format!("{}", story_index), my_text_style(500, &asset_server))
-                    .with_justify(JustifyText::Center),
+                text: Text::from_section(
+                    format!("{}", story_index),
+                    my_text_style(500, &asset_server),
+                )
+                .with_justify(JustifyText::Center),
                 transform: Transform::from_translation(pos_text),
                 ..default()
             },
@@ -48,8 +50,10 @@ fn draw_story_points(
     }
 }
 
-fn update_story_points(mut query: Query<&mut Transform, With<StoryPoint>>,
-                       mut event_camera_move: EventReader<StoryPageMoveEvent>) {
+fn update_story_points(
+    mut query: Query<&mut Transform, With<StoryPoint>>,
+    mut event_camera_move: EventReader<StoryPageMoveEvent>,
+) {
     if !event_camera_move.is_empty() {
         for ev in event_camera_move.read() {
             for mut q in &mut query {

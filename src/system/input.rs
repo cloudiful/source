@@ -9,8 +9,7 @@ pub(crate) struct InputHandlePlugin;
 
 impl Plugin for InputHandlePlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_systems(Startup, setup)
+        app.add_systems(Startup, setup)
             .add_systems(Update, (input_handling, update_text).chain())
             .add_event::<StoryPageMoveEvent>();
     }
@@ -37,9 +36,11 @@ fn input_handling(
     let mut mouse_cursor_pos;
 
     for ev in event_mouse_cursor.read() {
-        mouse_cursor_pos = ev.position - Vec2::new(window.single().resolution.width() / 2.0,
-                                                   window.single().resolution.height() / 2.0);
-
+        mouse_cursor_pos = ev.position
+            - Vec2::new(
+                window.single().resolution.width() / 2.0,
+                window.single().resolution.height() / 2.0,
+            );
     }
 
     // mouse drag motion
@@ -57,26 +58,35 @@ fn input_handling(
     for ev in event_mouse_scroll.read() {
         match ev.unit {
             MouseScrollUnit::Line => {
-                event_camera_move.send(StoryPageMoveEvent { delta: Vec3::new(-ev.x * vel_story_point, ev.y * vel_story_point, 0.0) });
+                event_camera_move.send(StoryPageMoveEvent {
+                    delta: Vec3::new(-ev.x * vel_story_point, ev.y * vel_story_point, 0.0),
+                });
             }
             MouseScrollUnit::Pixel => {
-                event_camera_move.send(StoryPageMoveEvent { delta: Vec3::new(-ev.x, ev.y, 0.0) });
+                event_camera_move.send(StoryPageMoveEvent {
+                    delta: Vec3::new(-ev.x, ev.y, 0.0),
+                });
             }
         }
     }
 
     // keyboard press
     if keyboard_input.pressed(KeyCode::KeyW) || keyboard_input.pressed(KeyCode::ArrowUp) {
-        event_camera_move.send(StoryPageMoveEvent { delta: Vec3::new(0.0, vel_story_point, 0.0) });
-    } else if keyboard_input.pressed(KeyCode::KeyS) || keyboard_input.pressed(KeyCode::ArrowDown)
-    {
-        event_camera_move.send(StoryPageMoveEvent { delta: Vec3::new(0.0, -vel_story_point, 0.0) });
-    } else if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft)
-    {
-        event_camera_move.send(StoryPageMoveEvent { delta: Vec3::new(-vel_story_point, 0.0, 0.0) });
-    } else if keyboard_input.pressed(KeyCode::KeyD) || keyboard_input.pressed(KeyCode::ArrowRight)
-    {
-        event_camera_move.send(StoryPageMoveEvent { delta: Vec3::new(vel_story_point, 0.0, 0.0) });
+        event_camera_move.send(StoryPageMoveEvent {
+            delta: Vec3::new(0.0, vel_story_point, 0.0),
+        });
+    } else if keyboard_input.pressed(KeyCode::KeyS) || keyboard_input.pressed(KeyCode::ArrowDown) {
+        event_camera_move.send(StoryPageMoveEvent {
+            delta: Vec3::new(0.0, -vel_story_point, 0.0),
+        });
+    } else if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft) {
+        event_camera_move.send(StoryPageMoveEvent {
+            delta: Vec3::new(-vel_story_point, 0.0, 0.0),
+        });
+    } else if keyboard_input.pressed(KeyCode::KeyD) || keyboard_input.pressed(KeyCode::ArrowRight) {
+        event_camera_move.send(StoryPageMoveEvent {
+            delta: Vec3::new(vel_story_point, 0.0, 0.0),
+        });
     }
 }
 
@@ -92,9 +102,7 @@ fn update_text(
     }
 }
 
-fn setup(mut commands: Commands,
-         asset_server: Res<AssetServer>)
-{
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         InputText,
         TextBundle::from_section("none", my_text_style(600, &asset_server))
